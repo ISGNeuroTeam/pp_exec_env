@@ -1,17 +1,27 @@
 from abc import abstractmethod
 from typing import List
 
+from pp_exec_env.dataframe import SchemaAccessor
 import execution_environment.base_command as eebc
 import pandas as pd
 
 
-Rule = eebc.base_command.Rule
+_ = SchemaAccessor  # Remove warning for unused import
+Rule = eebc.Rule
 
 
 class Syntax(eebc.Syntax):
     def __init__(self, argument_rules: List[Rule], use_timewindow: bool):
-        self.argument_rules = argument_rules
+        self._argument_rules = argument_rules
         self.use_timewindow = use_timewindow
+
+    @property
+    def argument_rules(self) -> List[Rule]:
+        return self._argument_rules
+
+    @argument_rules.setter
+    def argument_rules(self, argument_rules: List[Rule]):
+        self._argument_rules = argument_rules
 
     def to_dict(self):
         return {"rules": [r.to_dict() for r in self.argument_rules], "use_timewindow": self.use_timewindow}
