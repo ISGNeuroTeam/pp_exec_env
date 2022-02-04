@@ -1,5 +1,5 @@
 import re
-from typing import Dict
+from typing import Dict, Tuple
 
 import pandas as pd
 import numpy as np
@@ -60,36 +60,37 @@ OBJ_TYPE = np.dtype(np.object_)
 SPARK_FIELD_DDL_REGEX = re.compile("^`(.*)?` ([A-Z]+)(<[A-Z]+>)?( NOT NULL)?$")
 
 
-def read_schema(schema_path: str) -> Dict:
+def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
     with open(schema_path) as file:
         ddl = file.read()
     fields = ddl.split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
 
     schema = {}
+    ddl_schema = {}
     for field in fields:
         field_name, field_type, array_type, _ = SPARK_FIELD_DDL_REGEX.match(field).groups()
         field_name = field_name.replace('``', '`')  # DDL escaping for backticks
+        _field_type = field_type  # copy for later
         if array_type:
             field_type = None  # Pandas will think it is an Object, it does not have an implementation of Array dtype
+            _field_type = f"{_field_type}{array_type}"
         schema[field_name] = DDL_TO_PANDAS.get(field_type, OBJ_TYPE)
-    return schema
+        ddl_schema[field_name] = _field_type
+    return schema, ddl_schema
 
 
 def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
-    schema = read_schema(schema_path)
+    schema, ddl_schema = read_schema(schema_path)
     df = pd.read_json(data_path, lines=True, orient='records', dtype=schema)
-    try:
-        df = df.set_index('_time')
-    except KeyError:
-        df.index.name = "Index"
+    df.index.name = "Index"
+    df.schema._initial_schema = ddl_schema
     return df
 
 
 def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
-    schema = read_schema(schema_path)
-    df = pd.read_parquet(data_path, dtype=schema)
-    try:
-        df = df.set_index('_time')
-    except KeyError:
-        df.index.name = "Index"
+    schema, ddl_schema = read_schema(schema_path)
+    df = pd.read_parquet(data_path)
+    df = df.astype(schema)
+    df.index.name = "Index"
+    df.schema._initial_schema = ddl_schema
     return df

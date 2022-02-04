@@ -8,7 +8,8 @@ class SchemaAccessor:
     def __init__(self, pandas_obj):
         self._obj: pd.DataFrame = pandas_obj
         self._specials = {}
-        self._initial_schema = pandas_obj.schema
+        self._initial_schema = {}  # So that the next line works correctly
+        self._initial_schema = self.schema
 
     @property
     def specials(self):
@@ -18,8 +19,6 @@ class SchemaAccessor:
         self._specials[field] = ddl_type
 
     def get_dll_type(self, field, dtype):
-        if field is None:
-            raise ValueError("Field had name \"None\", probably index is unnamed")
         if dtype != OBJ_TYPE:
             if isinstance(dtype, np.dtype):
                 dtype = dtype.type
@@ -60,10 +59,10 @@ class SchemaAccessor:
     @property
     def schema(self):
         schema = {**self._specials}  # Fancy way to copy, to avoid dealing with references
-        fields = [(self._obj.index.name, self._obj.index.dtype),
-                  *(filter(lambda x: x[0] not in self._specials.keys(), self._obj.dtypes.to_dict().items()))]
+        fields = (filter(lambda x: x[0] not in self._specials.keys(), self._obj.dtypes.to_dict().items()))
         for field, dtype in fields:
             schema[field] = self.get_dll_type(field, dtype)
+            # Now look for downcast on numpy types and try to remove as much of it, as possible
             if isinstance(dtype, np.dtype):
                 initial_ddl = self._initial_schema.get(field, None)
                 if initial_ddl is not None and DDL_TO_PANDAS[initial_ddl] == dtype.name:

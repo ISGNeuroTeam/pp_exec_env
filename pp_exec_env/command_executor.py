@@ -14,6 +14,8 @@ class CommandExecutor(eece.CommandExecutor):
         self.local_storage = storages[LPP]
         self.shared_storage = storages[SPP]
         self.ips = storages[IPS]
+
+        self.command_classes = {}
         self.commands_directory = commands_directory
 
         self._import_sys_commands()
@@ -26,8 +28,8 @@ class CommandExecutor(eece.CommandExecutor):
         """
         SysWriteResultCommand.shared_storage_path = self.shared_storage
         SysWriteResultCommand.local_storage_path = self.local_storage
-        SysWriteResultCommand.ips_path = self.ips
 
+        SysWriteResultCommand.ips_path = self.ips
         SysReadInterProcCommand.ips_path = self.ips
         SysWriteInterProcCommand.ips_path = self.ips
 
@@ -53,7 +55,7 @@ class CommandExecutor(eece.CommandExecutor):
                 spec.loader.exec_module(module)
                 sys.modules.pop(spec.name)
 
-                if module.__dict__.get('__all__', None) is None:
+                if module.__dict__.get('__all__', None) is None or not module.__all__:  # Existence and emptiness
                     continue
 
                 cls_name = module.__all__[0]
@@ -73,7 +75,7 @@ class CommandExecutor(eece.CommandExecutor):
             command_cls = self.command_classes[command_name]
             get_arg = eece.GetArg(self, arguments)
             command = command_cls(get_arg)
-            ndf = command.transform(df)
-            if not isinstance(ndf, pd.DataFrame):
+            df = command.transform(df)
+            if not isinstance(df, pd.DataFrame):
                 raise ValueError("You're doing something spooky, command must return a DataFrame")
         return df

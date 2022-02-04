@@ -30,7 +30,7 @@ class SysReadInterProcCommand(BaseCommand):
             df = read_jsonl_with_schema(os.path.join(full_jsonl_path, DEFAULT_SCHEMA_PATH),
                                         os.path.join(full_jsonl_path, DEFAULT_DATA_PATH))
         else:
-            raise ValueError(f"Path not found: {os.path.join(self.ips_path, result_path)}")
+            raise ValueError(f"No parquet or jsonl folder found there: {os.path.join(self.ips_path, result_path)}")
 
         return df
 
@@ -55,8 +55,11 @@ class SysWriteResultCommand(BaseCommand):
         else:
             raise ValueError(f"Unknown storage_type \"{stype}\"")
 
-        full_data_path = os.path.join(base_path, result_path, "jsonl", DEFAULT_DATA_PATH)
-        full_schema_path = os.path.join(base_path, result_path, "jsonl", DEFAULT_SCHEMA_PATH)
+        jsonl_path = os.path.join(base_path, result_path, "jsonl")
+        os.makedirs(jsonl_path, exist_ok=True)
+
+        full_data_path = os.path.join(jsonl_path, DEFAULT_DATA_PATH)
+        full_schema_path = os.path.join(jsonl_path, DEFAULT_SCHEMA_PATH)
 
         with open(full_schema_path, 'w') as file:
             file.write(df.schema.ddl)
@@ -72,8 +75,12 @@ class SysWriteInterProcCommand(BaseCommand):
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         result_path = self.get_arg("path").value
-        full_data_path = os.path.join(self.ips_path, result_path, "parquet", DEFAULT_DATA_PATH)
-        full_schema_path = os.path.join(self.ips_path, result_path, "parquet", DEFAULT_SCHEMA_PATH)
+
+        parquet_path = os.path.join(self.ips_path, result_path, "parquet")
+        os.makedirs(parquet_path, exist_ok=True)
+
+        full_data_path = os.path.join(parquet_path, DEFAULT_DATA_PATH)
+        full_schema_path = os.path.join(parquet_path, DEFAULT_SCHEMA_PATH)
 
         with open(full_schema_path, 'w') as file:
             file.write(df.schema.ddl)
