@@ -1,15 +1,32 @@
+import importlib.util
 import logging
+import os
+import sys
 from typing import Dict, List, Type
 
-import pandas as pd
 import execution_environment.command_executor as eece
-from pp_exec_env.sys_commands import SysWriteResultCommand, SysWriteInterProcCommand, SysReadInterProcCommand, LPP, SPP, IPS
+import pandas as pd
+
 from pp_exec_env.base_command import BaseCommand
+from pp_exec_env.sys_commands import (
+    SysWriteResultCommand,
+    SysWriteInterProcCommand,
+    SysReadInterProcCommand,
+    LPP, SPP, IPS
+)
 
 
 class CommandExecutor(eece.CommandExecutor):
     """
-    Abstract class that manages command imports and OTL execution for python_computing_node
+    Implementation of execution_environment.CommandExecutor.
+
+    Attributes:
+        commands_directory: path to the folder with commands packages
+        command_classes: a dictionary of command name and their classes
+        logger: logging.Logger instance
+        local_storage: path to mounted PostProcessing Local Storage
+        shared_storage: path to mounted PostProcessing Shared Storage
+        ips: path to mounted InterProcessing Storage
     """
 
     def __init__(self, storages: dict[str, str], commands_directory: str):
@@ -30,7 +47,6 @@ class CommandExecutor(eece.CommandExecutor):
     def _import_sys_commands(self):
         """
         Initialize system commands in the CommandExecutor.
-        Reference implementation provided.
         """
         SysWriteResultCommand.shared_storage_path = self.shared_storage
         SysWriteResultCommand.local_storage_path = self.local_storage
@@ -48,9 +64,6 @@ class CommandExecutor(eece.CommandExecutor):
         """
         Initialize custom commands in the CommandExecutor.
         """
-        import os
-        import importlib.util
-        import sys
 
         for name in os.listdir(self.commands_directory):
             path = os.path.join(self.commands_directory, name)
@@ -76,8 +89,12 @@ class CommandExecutor(eece.CommandExecutor):
 
     def execute(self, commands: List[Dict]):
         """
-        Execute program provided in `commands`.
-        Reference implementation provided.
+        Execute OTLTree provided in `commands`
+
+        Args:
+            commands: a list of all commands with their arguments to run
+        Raises:
+            Pretty much anything that and be raised
         """
         self.logger.info("Execution started")
         df = None
