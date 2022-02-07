@@ -4,9 +4,7 @@ from typing import List
 import execution_environment.base_command as eebc
 import pandas as pd
 
-from pp_exec_env.dataframe import SchemaAccessor
 
-_ = SchemaAccessor  # Remove warning for unused import
 Rule = eebc.Rule
 
 
