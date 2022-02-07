@@ -1,8 +1,10 @@
-from typing import Dict, List
+import logging
+from typing import Dict, List, Type
 
+import pandas as pd
 import execution_environment.command_executor as eece
 from pp_exec_env.sys_commands import SysWriteResultCommand, SysWriteInterProcCommand, SysReadInterProcCommand, LPP, SPP, IPS
-import pandas as pd
+from pp_exec_env.base_command import BaseCommand
 
 
 class CommandExecutor(eece.CommandExecutor):
@@ -11,15 +13,19 @@ class CommandExecutor(eece.CommandExecutor):
     """
 
     def __init__(self, storages: dict[str, str], commands_directory: str):
+        self.logger = logging.getLogger("PostProcessing")
+        self.logger.info("Initialization started")
         self.local_storage = storages[LPP]
         self.shared_storage = storages[SPP]
         self.ips = storages[IPS]
 
-        self.command_classes = {}
+        self.command_classes: Dict[str, Type[BaseCommand]] = {}
         self.commands_directory = commands_directory
 
+        self.logger.info("Importing commands")
         self._import_sys_commands()
         self._import_user_commands()
+        self.logger.info("Initialization finished")
 
     def _import_sys_commands(self):
         """
@@ -56,26 +62,36 @@ class CommandExecutor(eece.CommandExecutor):
                 sys.modules.pop(spec.name)
 
                 if module.__dict__.get('__all__', None) is None or not module.__all__:  # Existence and emptiness
+                    self.logger.warning(f"Plugin {name} ignored, __all__ is empty or not found")
                     continue
 
                 cls_name = module.__all__[0]
                 cls = module.__getattribute__(cls_name)
                 if cls not in ['sys_read_interproc', 'sys_write_interproc', 'sys_write_result']:
                     self.command_classes[name] = cls
+                else:
+                    self.logger.warning(f"Plugin {name} ignored, cannot redefine system command")
+            else:
+                self.logger.warning(f"Plugin {name} ignored, either not a folder or no __init__.py")
 
     def execute(self, commands: List[Dict]):
         """
         Execute program provided in `commands`.
         Reference implementation provided.
         """
+        self.logger.info("Execution started")
         df = None
         for command in commands:
             arguments = command['arguments']
             command_name = command['name']
+            self.logger.info(f"Command {command_name} in progress...")
+
             command_cls = self.command_classes[command_name]
             get_arg = eece.GetArg(self, arguments)
-            command = command_cls(get_arg)
+            command = command_cls(get_arg, self.logger.getChild(f"command.{command_name}"))
+
             df = command.transform(df)
+
             if not isinstance(df, pd.DataFrame):
                 raise ValueError("You're doing something spooky, command must return a DataFrame")
         return df

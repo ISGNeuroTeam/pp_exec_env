@@ -83,7 +83,7 @@ def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
     schema, ddl_schema = read_schema(schema_path)
     df = pd.read_json(data_path, lines=True, orient='records', dtype=schema)
     df.index.name = "Index"
-    df.schema._initial_schema = ddl_schema
+    df.schema._initial_schema = ddl_schema  # Redefine initial schema to avoid upcasting as much as possible
     return df
 
 
@@ -92,5 +92,5 @@ def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
     df = pd.read_parquet(data_path)
     df = df.astype(schema)
     df.index.name = "Index"
-    df.schema._initial_schema = ddl_schema
+    df.schema._initial_schema = ddl_schema  # Redefine initial schema to avoid upcasting as much as possible
     return df
