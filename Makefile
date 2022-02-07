@@ -17,7 +17,7 @@ clean_venv:
 
 test: venv install
 	echo "Testing..."
-	./venv/bin/python3 -m doctest execution_environment/*.py -o ELLIPSIS
+	./venv/bin/python3 -m doctest pp_exec_env/*.py -o ELLIPSIS
 
 clean: clean_venv
 	echo "Cleaning..."
