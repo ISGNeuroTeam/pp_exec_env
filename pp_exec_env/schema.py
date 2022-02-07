@@ -1,9 +1,8 @@
 import re
 from typing import Dict, Tuple
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 
 DDL_TO_PANDAS = {
     "STRING": pd.StringDtype(),
@@ -52,7 +51,6 @@ PYTHON_TO_DDL = {
 
 OBJ_TYPE = np.dtype(np.object_)
 
-
 # Group 1: Field Name
 # Group 2: Type
 # Group 3: Type if Group 2 was an ARRAY
@@ -94,3 +92,18 @@ def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
     df.index.name = "Index"
     df.schema._initial_schema = ddl_schema  # Redefine initial schema to avoid upcasting as much as possible
     return df
+
+
+def write_schema(df: pd.DataFrame, schema_path: str):
+    with open(schema_path, 'w') as file:
+        file.write(df.schema.ddl)
+
+
+def write_jsonl_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
+    write_schema(df, schema_path)
+    df.to_json(data_path, lines=True, orient='records')
+
+
+def write_parquet_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
+    write_schema(df, schema_path)
+    df.to_parquet(data_path, compression="snappy")

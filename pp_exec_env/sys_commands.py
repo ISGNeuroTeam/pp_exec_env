@@ -1,9 +1,14 @@
 import os
 
-from pp_exec_env.base_command import BaseCommand, Syntax, Rule
-from pp_exec_env.schema import read_parquet_with_schema, read_jsonl_with_schema
 import pandas as pd
 
+from pp_exec_env.base_command import BaseCommand, Syntax, Rule
+from pp_exec_env.schema import (
+    read_parquet_with_schema,
+    read_jsonl_with_schema,
+    write_parquet_with_schema,
+    write_jsonl_with_schema
+)
 
 SPP = "SHARED_POST_PROCESSING"
 LPP = "LOCAL_POST_PROCESSING"
@@ -13,6 +18,10 @@ DEFAULT_SCHEMA_PATH = "_SCHEMA"
 
 
 class SysReadInterProcCommand(BaseCommand):
+    """
+    An implementation of `ReadIPS` system command,
+    which reads parquet and jsonl result files with schema from the InterProcessing Storage.
+    """
     syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
                      Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
 
@@ -36,6 +45,12 @@ class SysReadInterProcCommand(BaseCommand):
 
 
 class SysWriteResultCommand(BaseCommand):
+    """
+    An implementation of `WriteResult` system command,
+    which writes jsonl result files with schema in the desired storage.
+
+    Available storage options: Local Postprocessing and Shared Postprocessing
+    """
     syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
                      Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
 
@@ -46,7 +61,6 @@ class SysWriteResultCommand(BaseCommand):
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         result_path = self.get_arg("path").value
         stype = self.get_arg("storage_type").value
-        base_path = ""
 
         if stype == LPP:
             base_path = self.local_storage_path
@@ -61,13 +75,15 @@ class SysWriteResultCommand(BaseCommand):
         full_data_path = os.path.join(jsonl_path, DEFAULT_DATA_PATH)
         full_schema_path = os.path.join(jsonl_path, DEFAULT_SCHEMA_PATH)
 
-        with open(full_schema_path, 'w') as file:
-            file.write(df.schema.ddl)
-        df.to_json(full_data_path, lines=True, orient='records')
+        write_jsonl_with_schema(df, full_schema_path, full_data_path)
         return df
 
 
 class SysWriteInterProcCommand(BaseCommand):
+    """
+    An implementation of `WriteIPS` system command,
+    which writes parquet result files with schema in the InterProcessing Storage.
+    """
     syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
                      Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
 
@@ -82,7 +98,5 @@ class SysWriteInterProcCommand(BaseCommand):
         full_data_path = os.path.join(parquet_path, DEFAULT_DATA_PATH)
         full_schema_path = os.path.join(parquet_path, DEFAULT_SCHEMA_PATH)
 
-        with open(full_schema_path, 'w') as file:
-            file.write(df.schema.ddl)
-        df.to_parquet(full_data_path, compression="snappy")
+        write_parquet_with_schema(df, full_schema_path, full_data_path)
         return df
