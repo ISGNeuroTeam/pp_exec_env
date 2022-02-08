@@ -84,7 +84,7 @@ def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
 
 def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
     schema, ddl_schema = read_schema(schema_path)
-    df = pd.read_json(data_path, lines=True, orient='records', dtype=schema)
+    df = pd.read_json(data_path, lines=True, orient="records", dtype=schema, keep_default_dates=False)
     df.index.name = "Index"
     df.schema._initial_schema = ddl_schema  # Redefine initial schema to avoid upcasting as much as possible
     return df
@@ -106,7 +106,7 @@ def write_schema(df: pd.DataFrame, schema_path: str):
 
 def write_jsonl_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
     write_schema(df, schema_path)
-    df.to_json(data_path, lines=True, orient='records')
+    df.to_json(data_path, lines=True, orient="records")
 
 
 def write_parquet_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
