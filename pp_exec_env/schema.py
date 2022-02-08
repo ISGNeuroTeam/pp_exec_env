@@ -58,13 +58,11 @@ OBJ_TYPE = np.dtype(np.object_)
 SPARK_FIELD_DDL_REGEX = re.compile("^`(.*)?` ([A-Z]+)(<[A-Z]+>)?( NOT NULL)?$")
 
 
-def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
-    with open(schema_path) as file:
-        ddl = file.read()
+def ddl_to_pd_schema(ddl: str):
     fields = ddl.split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
-
     schema = {}
     ddl_schema = {}
+
     for field in fields:
         field_name, field_type, array_type, _ = SPARK_FIELD_DDL_REGEX.match(field).groups()
         field_name = field_name.replace('``', '`')  # DDL escaping for backticks
@@ -75,6 +73,13 @@ def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
         schema[field_name] = DDL_TO_PANDAS.get(field_type, OBJ_TYPE)
         ddl_schema[field_name] = _field_type
     return schema, ddl_schema
+
+
+def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
+    with open(schema_path) as file:
+        ddl = file.read()
+
+    return ddl_to_pd_schema(ddl)
 
 
 def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
