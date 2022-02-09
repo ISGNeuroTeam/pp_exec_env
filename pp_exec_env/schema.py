@@ -61,7 +61,28 @@ OBJ_TYPE = np.dtype(np.object_)
 SPARK_FIELD_DDL_REGEX = re.compile("^`(.*)?` ([A-Z]+)(<[A-Z]+>)?( NOT NULL)?$")
 
 
-def ddl_to_pd_schema(ddl: str):
+def ddl_to_pd_schema(ddl: str) -> Tuple[Dict, Dict]:
+    """
+    Convert Schema DDL string to a Pandas dtypes dictionary.
+    The function helps to handle data coming from Spark.
+
+    Args:
+        ddl: String with data schema in DDL format.
+             Usually produced by Spark.
+    Returns:
+        A tuple that contains two dictionaries.
+        The first one has fields as keys and Pandas dtypes as values.
+        The second one has fields as keys and DDL types as values.
+
+    Example Usage:
+
+    >>> ddl_str = "`_time` BIGINT,`some_field` DOUBLE,`another_field` ARRAY<INT>"
+    >>> s, d = ddl_to_pd_schema(ddl_str)
+    >>> s
+    {'_time': Int64Dtype(), 'some_field': 'float64', 'another_field': dtype('O')}
+    >>> d
+    {'_time': 'BIGINT', 'some_field': 'DOUBLE', 'another_field': 'ARRAY<INT>'}
+    """
     fields = ddl.split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
     schema = {}
     ddl_schema = {}
@@ -79,6 +100,23 @@ def ddl_to_pd_schema(ddl: str):
 
 
 def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
+    """
+    Read DDL Schema file and convert it with `ddl_to_pd_schema`
+
+    Args:
+        schema_path: Path to the file. Usually filename is _SCHEMA.
+    Returns:
+        See `ddl_to_pd_schema` function.
+
+    Example Usage:
+
+    >>> from pp_exec_env.schema import read_schema
+    >>> schema, schema_ddl = read_schema("../tests/resources/misc/sample_schema")
+    >>> schema
+    {'_time': Int64Dtype(), 'some_field': 'float64', 'another_field': 'int32'}
+    >>> schema_ddl
+    {'_time': 'BIGINT', 'some_field': 'DOUBLE', 'another_field': 'INT'}
+    """
     with open(schema_path) as file:
         ddl = file.read()
 
@@ -86,6 +124,25 @@ def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
 
 
 def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
+    """
+    Read jsonlines data and infer data types from schema
+
+    Args:
+        schema_path: Path to schema file. Usually filename is _SCHEMA.
+        data_path: Path to file with data. Usually filename is data.
+    Returns:
+        A pd.DataFrame with data from the files.
+
+    Example Usage:
+
+    >>> from pp_exec_env.schema import read_jsonl_with_schema
+    >>> df = read_jsonl_with_schema("../tests/resources/data/simple_jsonl/_SCHEMA",
+    ...                             "../tests/resources/data/simple_jsonl/data")
+    >>> df.head(1)
+                _time
+    Index
+    0      1644423843
+    """
     schema, ddl_schema = read_schema(schema_path)
     df = pd.read_json(data_path, lines=True, orient="records", dtype=schema, keep_default_dates=False)
     df.index.name = "Index"
@@ -94,6 +151,25 @@ def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
 
 
 def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
+    """
+    Read parquet data and infer data types from schema
+
+    Args:
+        schema_path: Path to schema file. Usually filename is _SCHEMA.
+        data_path: Path to file with data. Usually filename is data.
+    Returns:
+        A pd.DataFrame with data from the files.
+
+    Example Usage:
+
+    >>> from pp_exec_env.schema import read_jsonl_with_schema
+    >>> df = read_parquet_with_schema("../tests/resources/data/simple_parquet/_SCHEMA",
+    ...                               "../tests/resources/data/simple_parquet/data")
+    >>> df.head(1)
+                _time
+    Index
+    0      1644425044
+    """
     schema, ddl_schema = read_schema(schema_path)
     df = pd.read_parquet(data_path)
     df = df.astype(schema)
@@ -103,15 +179,49 @@ def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
 
 
 def write_schema(df: pd.DataFrame, schema_path: str):
+    """
+    Write schema of provided DataFrame to the given path.
+
+    Args:
+        df: Target pd.DataFrame.
+        schema_path: Path for future schema.
+
+    No example usage due to side effects.
+    """
     with open(schema_path, 'w') as file:
         file.write(df.schema.ddl)
 
 
 def write_jsonl_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
+    """
+    Write data and schema to the provided folder in jsonlines format.
+
+    Args:
+        df: Target pd.DataFrame.
+        schema_path: Path for future schema.
+        data_path: Path for future data.
+
+    No example usage due to side effects.
+    """
     write_schema(df, schema_path)
     df.to_json(data_path, lines=True, orient="records")
 
 
 def write_parquet_with_schema(df: pd.DataFrame, schema_path: str, data_path: str):
+    """
+    Write data and schema to the provided folder in parquet format.
+
+    Args:
+        df: Target pd.DataFrame.
+        schema_path: Path for future schema.
+        data_path: Path for future data.
+
+    No example usage due to side effects.
+    """
     write_schema(df, schema_path)
     df.to_parquet(data_path, compression="snappy")
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
