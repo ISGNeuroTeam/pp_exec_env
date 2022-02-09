@@ -9,6 +9,16 @@ Rule = eebc.Rule
 
 
 class Syntax(eebc.Syntax):
+    """
+    Syntax object should be used to define `syntax` attribute of a command that inherits `BaseCommand`.
+
+    Attributes:
+        argument_rules: A list of `Rule` instances that will be used during syntax analysis.
+                        See `Rule` class documentation.
+        use_timewindow: If set to True, command will be provided with additional Arguments
+                        that give information about desired time window.
+                        # TODO: Implement
+    """
     def __init__(self, argument_rules: List[Rule], use_timewindow: bool):
         self._argument_rules = argument_rules
         self.use_timewindow = use_timewindow
@@ -26,6 +36,17 @@ class Syntax(eebc.Syntax):
 
 
 class BaseCommand(eebc.BaseCommand):
+    """
+    This abstract class should be used by developers of PostProcessing commands
+    in order to create the commands.
+
+    Each Command should define a `syntax` attribute as a class variable
+    In other words, it should be accessible without instance initialization.
+
+    Each Command should also define a `transform` method that takes
+    a pd.DataFrame as its only argument and returns a pd.DataFrame.
+    Inside transform developer is free to define any transformations with the given DataFrame.
+    """
     @property
     @abstractmethod
     def syntax(self) -> Syntax:
