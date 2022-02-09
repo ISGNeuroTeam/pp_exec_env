@@ -4,6 +4,9 @@ from typing import Dict, Tuple
 import numpy as np
 import pandas as pd
 
+
+# This is not technically correct, as BIGINT in Scala can go from LONG to BIGDECIMAL when needed
+# BIGINT is set to pd.Int64Dtype for _time to be nullable (experimental)
 DDL_TO_PANDAS = {
     "STRING": pd.StringDtype(),
     "FLOAT": "float32",
@@ -11,14 +14,14 @@ DDL_TO_PANDAS = {
     "INTEGER": "int32",
     "INT": "int32",
     "LONG": "int64",
-    "BIGINT": "int64",  # This is not technically correct, as BIGINT in Scala can go from LONG to BIGDECIMAL when needed
+    "BIGINT": pd.Int64Dtype(),
     "NULL": "int64",
 }
 
 PANDAS_TO_DDL = {
     "int64": "LONG",
     np.int64: "LONG",
-    pd.Int64Dtype(): "LONG",
+    pd.Int64Dtype(): "BIGINT",
 
     "int32": "INTEGER",
     pd.Int32Dtype(): "INTEGER",
