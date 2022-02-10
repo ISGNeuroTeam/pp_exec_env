@@ -93,7 +93,7 @@ class TestCommands(unittest.TestCase):
                 args["storage_type"][0]["value"] = storage_type
                 get_arg = GetArg(None, args)
 
-                cmd = cls(get_arg, logger)
+                cmd = cls(get_arg, None)
                 cmd.transform(self.df)
 
                 self.assertTrue(os.path.exists(os.path.join(storage_path, "output_data")))
@@ -121,7 +121,7 @@ class TestCommands(unittest.TestCase):
                 args["path"][0]["value"] = f"read_input_{file_format}"
                 get_arg = GetArg(None, args)
 
-                cmd = SysReadInterProcCommand(get_arg, logger)
+                cmd = SysReadInterProcCommand(get_arg, None)
                 ndf = cmd.transform(pd.DataFrame())
 
                 self.assertTrue(ndf.equals(self.df))

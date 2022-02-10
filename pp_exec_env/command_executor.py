@@ -2,7 +2,7 @@ import importlib.util
 import logging
 import os
 import sys
-from typing import Dict, List, Type
+from typing import Dict, List, Type, Callable
 
 import execution_environment.command_executor as eece
 import pandas as pd
@@ -15,7 +15,6 @@ from pp_exec_env.sys_commands import (
     SysReadInterProcCommand,
     LPP, SPP, IPS
 )
-
 
 FOLLOW_LINKS = config["plugins"]["follow_symlinks"]
 SYS_WRITE_RESULT = config["system_commands"]["sys_write_result_name"]
@@ -30,16 +29,20 @@ class CommandExecutor(eece.CommandExecutor):
 
     Attributes:
         command_classes: a dictionary of command name and their classes
+        progress_message: Function for Worker-Server IPC logging
+        current_depth: Subsearch depth in the current state of CommandExecutor
     """
 
     logger = logging.getLogger(config["logging"]["base_logger"])
 
-    def __init__(self, storages: dict[str, str], commands_directory: str):
+    def __init__(self, storages: dict[str, str], commands_directory: str, progress_message: Callable):
         self.logger.info("Initialization started")
         self.logger.info("Importing system commands")
         self.command_classes = self._import_sys_commands(local_storage=storages[LPP],
                                                          shared_storage=storages[SPP],
                                                          ips=storages[IPS])
+        self.progress_message = progress_message
+        self.current_depth = 0  # Initial Subsearch depth.
 
         self.logger.info("Importing user commands")
         self.command_classes.update(self._import_user_commands(commands_directory))
@@ -126,7 +129,7 @@ class CommandExecutor(eece.CommandExecutor):
 
                 cls_name = module.__all__[0]
                 cls = module.__getattribute__(cls_name)
-                if cls not in ['sys_read_interproc', 'sys_write_interproc', 'sys_write_result']:
+                if cls not in [SYS_READ_IPS, SYS_WRITE_IPS, SYS_WRITE_RESULT]:
                     command_classes[name] = cls
                     CommandExecutor.logger.info(f"Added command {name}")
                 else:
@@ -149,14 +152,19 @@ class CommandExecutor(eece.CommandExecutor):
         """
         self.logger.info("Execution started")
         df = None
-        for command in commands:
+        pipeline_len = len(commands)
+
+        for idx, command in enumerate(commands):
             arguments = command['arguments']
             command_name = command['name']
             self.logger.info(f"Command {command_name} in progress...")
 
             command_cls = self.command_classes[command_name]
             get_arg = eece.GetArg(self, arguments)
-            command = command_cls(get_arg, self.logger.getChild(f"command.{command_name}"))
+            log_progress = self.get_command_progress_logger(command_name, idx, pipeline_len)
+
+            command = command_cls(get_arg, log_progress)
+            command.logger = self.logger.getChild(f"command.{command_name}")  # Not a part of the interface
 
             df = command.transform(df)
 

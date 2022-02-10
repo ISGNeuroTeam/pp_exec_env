@@ -14,6 +14,10 @@ from pp_exec_env.sys_commands import (
 )
 
 
+def boilerplate_progress_log():
+    pass
+
+
 class TestCommandExecutor(unittest.TestCase):
     def setUp(self):
         self.tmp = os.path.join(os.path.curdir, "tmp")
@@ -60,7 +64,8 @@ class TestCommandExecutor(unittest.TestCase):
         ce = CommandExecutor({IPS: self.ips,
                               LPP: self.lpp,
                               SPP: self.spp},
-                             self.commands)
+                             self.commands,
+                             boilerplate_progress_log)
 
         self.assertLessEqual(5, len(ce.command_classes))
 
@@ -99,7 +104,8 @@ class TestCommandExecutor(unittest.TestCase):
         ce = CommandExecutor({IPS: self.ips,
                               LPP: self.lpp,
                               SPP: self.spp},
-                             self.commands)
+                             self.commands,
+                             boilerplate_progress_log)
         syntax = ce.get_command_syntax()
         translator = OTL(syntax)
         job = [c.to_dict() for c in translator.translate(code)]

@@ -4,7 +4,6 @@ from typing import List
 import execution_environment.base_command as eebc
 import pandas as pd
 
-
 Rule = eebc.Rule
 
 

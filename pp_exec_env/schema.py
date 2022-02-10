@@ -4,7 +4,6 @@ from typing import Dict, Tuple
 import numpy as np
 import pandas as pd
 
-
 # This is not technically correct, as BIGINT in Scala can go from LONG to BIGDECIMAL when needed
 # BIGINT is set to pd.Int64Dtype for _time to be nullable (experimental)
 DDL_TO_PANDAS = {
