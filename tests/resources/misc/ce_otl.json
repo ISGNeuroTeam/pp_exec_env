@@ -1,0 +1,143 @@
+[
+  {
+    "name": "sys_read_interproc",
+    "arguments": {
+      "path": [
+        {
+          "value": "input_data",
+          "key": "path",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ],
+      "storage_type": [
+        {
+          "value": "whatever",
+          "key": "storage_type",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ]
+    }
+  },
+  {
+    "name": "join",
+    "arguments": {
+      "field": [
+        {
+          "value": "a",
+          "key": "",
+          "type": "string",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ],
+      "jdf": [
+        {
+          "value": [
+            {
+              "name": "sys_read_interproc",
+              "arguments": {
+                "path": [
+                  {
+                    "value": "join_data",
+                    "key": "path",
+                    "type": "term",
+                    "named_as": "",
+                    "group_by": [],
+                    "arg_type": "arg"
+                  }
+                ],
+                "storage_type": [
+                  {
+                    "value": "whatever",
+                    "key": "storage_type",
+                    "type": "term",
+                    "named_as": "",
+                    "group_by": [],
+                    "arg_type": "arg"
+                  }
+                ]
+              }
+            }
+          ],
+          "key": "",
+          "type": "string",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "subsearch"
+        }
+      ]
+    }
+  },
+  {
+    "name": "sys_write_result",
+    "arguments": {
+      "path": [
+        {
+          "value": "output_data",
+          "key": "path",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ],
+      "storage_type": [
+        {
+          "value": "LOCAL_POST_PROCESSING",
+          "key": "storage_type",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ]
+    }
+  },
+  {
+    "name": "sys_write_interproc",
+    "arguments": {
+      "path": [
+        {
+          "value": "output_data",
+          "key": "path",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ]
+    }
+  },
+  {
+    "name": "sys_read_interproc",
+    "arguments": {
+      "path": [
+        {
+          "value": "output_data",
+          "key": "path",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ],
+      "storage_type": [
+        {
+          "value": "whatever",
+          "key": "storage_type",
+          "type": "term",
+          "named_as": "",
+          "group_by": [],
+          "arg_type": "arg"
+        }
+      ]
+    }
+  }
+]

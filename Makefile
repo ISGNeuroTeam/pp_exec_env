@@ -15,9 +15,14 @@ clean_venv:
 	@echo "Cleaning venv..."
 	rm -rf ./venv
 
-test: venv install
+test: clean venv install
 	@echo "Testing..."
-	(cd pp_exec_env ; ../venv/bin/python3 -m doctest ./*.py -o ELLIPSIS -o NORMALIZE_WHITESPACE)
+	echo $(shell pwd)
+	. venv/bin/activate
+	(cd pp_exec_env ; python -m doctest ./*.py -o ELLIPSIS -o NORMALIZE_WHITESPACE)
+	(cd tests; python -m unittest command_executor sys_commands)
+	deactivate ./venv/bin/activate
+
 
 clean: clean_venv
 	@echo "Cleaning..."

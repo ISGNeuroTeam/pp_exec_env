@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open("requirements.txt", "r") as file:
+    deps = file.readlines()
+
 setup(name='pp_exec_env',
       version='0.1',
       description='Postprocessing Execution Environment',
@@ -8,6 +11,5 @@ setup(name='pp_exec_env',
       packages=['pp_exec_env'],
       package_dir={'pp_exec_env': 'pp_exec_env'},
       zip_safe=False,
-      install_requires=[
-          "execution_environment @ git+ssh://git@github.com/ISGNeuroTeam/execution_environment.git"],
+      install_requires=deps
       )

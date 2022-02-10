@@ -1,0 +1,1 @@
+`_time` BIGINT,`some_field` DOUBLE,`another_field` INT
