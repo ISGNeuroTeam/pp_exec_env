@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 
+from pp_exec_env import config
 from pp_exec_env.base_command import BaseCommand, Syntax, Rule
 from pp_exec_env.schema import (
     read_parquet_with_schema,
@@ -10,11 +11,11 @@ from pp_exec_env.schema import (
     write_jsonl_with_schema
 )
 
-SPP = "SHARED_POST_PROCESSING"
-LPP = "LOCAL_POST_PROCESSING"
-IPS = "INTERPROCESSING"
-DEFAULT_DATA_PATH = "data"
-DEFAULT_SCHEMA_PATH = "_SCHEMA"
+LPP = config["system_commands"]["local_storage_alias"]
+SPP = config["system_commands"]["shared_storage_alias"]
+IPS = config["system_commands"]["interproc_storage_alias"]
+DEFAULT_DATA_PATH = config["system_commands"]["data_file_name"]
+DEFAULT_SCHEMA_PATH = config["system_commands"]["schema_file_name"]
 
 
 class SysReadInterProcCommand(BaseCommand):

@@ -7,6 +7,7 @@ from typing import Dict, List, Type
 import execution_environment.command_executor as eece
 import pandas as pd
 
+from pp_exec_env import config
 from pp_exec_env.base_command import BaseCommand
 from pp_exec_env.sys_commands import (
     SysWriteResultCommand,
@@ -14,6 +15,12 @@ from pp_exec_env.sys_commands import (
     SysReadInterProcCommand,
     LPP, SPP, IPS
 )
+
+
+FOLLOW_LINKS = config["plugins"]["follow_symlinks"]
+SYS_WRITE_RESULT = config["system_commands"]["sys_write_result_name"]
+SYS_WRITE_IPS = config["system_commands"]["sys_write_interproc_name"]
+SYS_READ_IPS = config["system_commands"]["sys_read_interproc_name"]
 
 
 class CommandExecutor(eece.CommandExecutor):
@@ -25,7 +32,7 @@ class CommandExecutor(eece.CommandExecutor):
         command_classes: a dictionary of command name and their classes
     """
 
-    logger = logging.getLogger("PostProcessing")
+    logger = logging.getLogger(config["logging"]["base_logger"])
 
     def __init__(self, storages: dict[str, str], commands_directory: str):
         self.logger.info("Initialization started")
@@ -65,14 +72,14 @@ class CommandExecutor(eece.CommandExecutor):
         SysWriteInterProcCommand.ips_path = ips
 
         command_classes = {
-            "sys_read_interproc": SysReadInterProcCommand,
-            "sys_write_interproc": SysWriteInterProcCommand,
-            "sys_write_result": SysWriteResultCommand
+            SYS_READ_IPS: SysReadInterProcCommand,
+            SYS_WRITE_IPS: SysWriteInterProcCommand,
+            SYS_WRITE_RESULT: SysWriteResultCommand
         }
         return command_classes
 
     @staticmethod
-    def _import_user_commands(commands_directory: str, follow_links: bool = True) -> Dict[str, Type[BaseCommand]]:
+    def _import_user_commands(commands_directory: str, follow_links: bool = FOLLOW_LINKS) -> Dict[str, Type[BaseCommand]]:
         """
         Import user-defined commands from the given folder.
         The following rules are applied to the plugins:

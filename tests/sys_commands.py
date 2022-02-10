@@ -5,19 +5,20 @@ import logging
 
 import pandas as pd
 
+from execution_environment.command_executor import GetArg
 from pp_exec_env.schema import (
     read_jsonl_with_schema,
     read_parquet_with_schema,
     write_jsonl_with_schema,
     write_parquet_with_schema
 )
-from execution_environment.command_executor import GetArg
 from pp_exec_env.sys_commands import (
     SysWriteResultCommand,
     SysWriteInterProcCommand,
     SysReadInterProcCommand,
     DEFAULT_SCHEMA_PATH,
-    DEFAULT_DATA_PATH
+    DEFAULT_DATA_PATH,
+    IPS, LPP, SPP
 )
 
 
@@ -81,9 +82,9 @@ class TestCommands(unittest.TestCase):
         logger = logging.getLogger("Testing.SysWrite*")
 
         for cls, storage_type, storage_path, file_format in [
-            (SysWriteInterProcCommand, 'INTERPROCESSING', self.ips, "parquet"),
-            (SysWriteResultCommand, 'LOCAL_POST_PROCESSING', self.lpp, "jsonl"),
-            (SysWriteResultCommand, 'SHARED_POST_PROCESSING', self.spp, "jsonl")
+            (SysWriteInterProcCommand, IPS, self.ips, "parquet"),
+            (SysWriteResultCommand, LPP, self.lpp, "jsonl"),
+            (SysWriteResultCommand, SPP, self.spp, "jsonl")
         ]:
             with self.subTest(msg=f"Storage Type: {storage_type}",
                               storage_type=storage_type,

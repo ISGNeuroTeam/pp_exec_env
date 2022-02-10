@@ -5,11 +5,12 @@ import unittest
 
 import pandas as pd
 
-from pp_exec_env.command_executor import CommandExecutor
+from pp_exec_env.command_executor import CommandExecutor, SYS_WRITE_RESULT, SYS_WRITE_IPS, SYS_READ_IPS
 from pp_exec_env.sys_commands import (
     SysWriteResultCommand,
     SysWriteInterProcCommand,
-    SysReadInterProcCommand
+    SysReadInterProcCommand,
+    LPP, SPP, IPS
 )
 
 
@@ -37,17 +38,17 @@ class TestCommandExecutor(unittest.TestCase):
     def test_sys_commands_import(self):
         commands = CommandExecutor._import_sys_commands(self.spp, self.lpp, self.ips)
         expected = {
-            "sys_read_interproc": SysReadInterProcCommand,
-            "sys_write_interproc": SysWriteInterProcCommand,
-            "sys_write_result": SysWriteResultCommand
+            SYS_READ_IPS: SysReadInterProcCommand,
+            SYS_WRITE_IPS: SysWriteInterProcCommand,
+            SYS_WRITE_RESULT: SysWriteResultCommand
         }
 
         self.assertEqual(commands, expected)
-        self.assertEqual(self.ips, commands["sys_read_interproc"].ips_path)
-        self.assertEqual(self.ips, commands["sys_write_interproc"].ips_path)
-        self.assertEqual(self.ips, commands["sys_write_result"].ips_path)
-        self.assertEqual(self.lpp, commands["sys_write_result"].local_storage_path)
-        self.assertEqual(self.spp, commands["sys_write_result"].shared_storage_path)
+        self.assertEqual(self.ips, commands[SYS_READ_IPS].ips_path)
+        self.assertEqual(self.ips, commands[SYS_WRITE_IPS].ips_path)
+        self.assertEqual(self.ips, commands[SYS_WRITE_RESULT].ips_path)
+        self.assertEqual(self.lpp, commands[SYS_WRITE_RESULT].local_storage_path)
+        self.assertEqual(self.spp, commands[SYS_WRITE_RESULT].shared_storage_path)
 
     def test_user_commands_import(self):
         commands = CommandExecutor._import_user_commands(self.commands, follow_links=False)
@@ -56,22 +57,29 @@ class TestCommandExecutor(unittest.TestCase):
         self.assertEqual(expected, commands.__str__())
 
     def test_execute(self):
-        ce = CommandExecutor({"INTERPROCESSING": self.ips,
-                              "LOCAL_POST_PROCESSING": self.lpp,
-                              "SHARED_POST_PROCESSING": self.spp},
+        ce = CommandExecutor({IPS: self.ips,
+                              LPP: self.lpp,
+                              SPP: self.spp},
                              self.commands)
 
         self.assertLessEqual(5, len(ce.command_classes))
 
         with open(os.path.join(self.resources, "misc", "ce_otl.json")) as file:
-            code = json.load(file)
+            job = json.load(file)
+
+        job[0]["name"] = SYS_READ_IPS
+        job[1]["arguments"]["jdf"][0]["value"][0]["name"] = SYS_READ_IPS
+        job[2]["name"] = SYS_WRITE_RESULT
+        job[2]["arguments"]["storage_type"][0]["value"] = LPP
+        job[3]["name"] = SYS_WRITE_IPS
+        job[4]["name"] = SYS_READ_IPS
 
         expected = pd.DataFrame([[1, 2, "a", 2.20], [2, 3, "b", 3.14], [3, 4, "c", 15.60]],
                                 columns=["a", "b", "c", "d"])
         expected.index.name = "Index"
         expected["c"] = expected["c"].astype(pd.StringDtype())
 
-        df = ce.execute(code)
+        df = ce.execute(job)
 
         self.assertTrue(expected.equals(df))
         self.assertTrue(os.path.exists(os.path.join(self.ips, "output_data", "parquet")))
@@ -81,16 +89,16 @@ class TestCommandExecutor(unittest.TestCase):
         from otlang.otl import OTL
 
         code = f"""
-        | sys_read_interproc path=input_data, storage_type=whatever
-        | join 'a' [| sys_read_interproc path=join_data, storage_type=whatever]
-        | sys_write_result path=output_data, storage_type=LOCAL_POST_PROCESSING
-        | sys_write_interproc path=output_data, storage_type=whatever
-        | sys_read_interproc path=output_data, storage_type=whatever
+        | {SYS_READ_IPS} path=input_data, storage_type=whatever
+        | join 'a' [| {SYS_READ_IPS} path=join_data, storage_type=whatever]
+        | {SYS_WRITE_RESULT} path=output_data, storage_type={LPP}
+        | {SYS_WRITE_IPS} path=output_data, storage_type=whatever
+        | {SYS_READ_IPS} path=output_data, storage_type=whatever
         """
 
-        ce = CommandExecutor({"INTERPROCESSING": self.ips,
-                              "LOCAL_POST_PROCESSING": self.lpp,
-                              "SHARED_POST_PROCESSING": self.spp},
+        ce = CommandExecutor({IPS: self.ips,
+                              LPP: self.lpp,
+                              SPP: self.spp},
                              self.commands)
         syntax = ce.get_command_syntax()
         translator = OTL(syntax)
