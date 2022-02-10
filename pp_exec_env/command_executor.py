@@ -95,7 +95,9 @@ class CommandExecutor(eece.CommandExecutor):
         Example Usage:
 
         >>> from pp_exec_env.command_executor import CommandExecutor
-        >>> CommandExecutor._import_user_commands("../tests/resources/commands/", follow_links=False)
+        >>> import os
+        >>> CommandExecutor._import_user_commands(os.path.join(os.pardir, "tests", "resources", "commands"),
+        ...                                                    follow_links=False)
         {'sum': <class 'plugin.sum.SumCommand'>, 'join': <class 'plugin.myjoin.JoinCommand'>}
         """
         command_classes = {}
