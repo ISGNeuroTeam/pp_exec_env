@@ -11,6 +11,8 @@ install: venv
 	@echo Install package
 	./venv/bin/pip install .
 
+reinstall: clean venv install
+
 clean_venv:
 	@echo "Cleaning venv..."
 	rm -rf ./venv

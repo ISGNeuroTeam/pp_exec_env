@@ -143,3 +143,6 @@ pip-selfcheck.json
 
 # JIRA plugin
 atlassian-ide-plugin.xml
+
+# Real config
+config.ini

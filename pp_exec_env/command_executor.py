@@ -1,3 +1,4 @@
+import configparser
 import importlib.util
 import logging
 import os
@@ -128,12 +129,25 @@ class CommandExecutor(eece.CommandExecutor):
                     continue
 
                 cls_name = module.__all__[0]
-                cls = module.__getattribute__(cls_name)
-                if cls not in [SYS_READ_IPS, SYS_WRITE_IPS, SYS_WRITE_RESULT]:
-                    command_classes[name] = cls
-                    CommandExecutor.logger.info(f"Added command {name}")
-                else:
+                cls: Type[BaseCommand] = module.__getattribute__(cls_name)
+                if cls in [SYS_READ_IPS, SYS_WRITE_IPS, SYS_WRITE_RESULT]:
                     CommandExecutor.logger.warning(f"Plugin {name} ignored, cannot redefine system command")
+                    continue
+
+                config_path = os.path.join(path, "config.ini")
+                files = None
+                try:
+                    files = cls.config.read(config_path)
+                except configparser.ParsingError as e:
+                    CommandExecutor.logger.warning(f"Ignoring config file of {cls_name} plugin ({config_path}).")
+                    CommandExecutor.logger.warning(e.message)
+                    files = "err"
+                finally:
+                    if isinstance(files, list) and len(files) == 0:  # Config file was not found
+                        CommandExecutor.logger.warning(f"No config file found for plugin {cls_name}")
+
+                command_classes[name] = cls
+                CommandExecutor.logger.info(f"Added command {cls_name} with name `{name}`")
             else:
                 CommandExecutor.logger.warning(f"Plugin {name} ignored, either not a folder or no __init__.py")
 
