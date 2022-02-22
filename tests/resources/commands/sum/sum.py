@@ -9,7 +9,7 @@ class SumCommand(BaseCommand):
                     use_timewindow=False)
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        cols = [self.get_arg('col').value] + [v.value for v in self.get_arg('cols', all=True)]
+        cols = [self.get_arg('col').value] + [v.value for v in self.get_iter('cols')]
         field_name = self.get_arg('field_name').value
 
         df[field_name] = df[cols].sum(axis=1)

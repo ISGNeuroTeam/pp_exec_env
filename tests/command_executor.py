@@ -56,7 +56,7 @@ class TestCommandExecutor(unittest.TestCase):
 
     def test_user_commands_import(self):
         commands = CommandExecutor._import_user_commands(self.commands, follow_links=False)
-        expected = "{'sum': <class 'plugin.sum.SumCommand'>, 'join': <class 'plugin.myjoin.JoinCommand'>}"
+        expected = "{'join': <class 'plugin.myjoin.JoinCommand'>, 'sum': <class 'plugin.sum.SumCommand'>}"
 
         self.assertEqual(expected, commands.__str__())
 

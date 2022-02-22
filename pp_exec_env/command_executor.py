@@ -109,11 +109,11 @@ class CommandExecutor(eece.CommandExecutor):
         >>> import os
         >>> CommandExecutor._import_user_commands(os.path.join(os.pardir, "tests", "resources", "commands"),
         ...                                                    follow_links=False)
-        {'sum': <class 'plugin.sum.SumCommand'>, 'join': <class 'plugin.myjoin.JoinCommand'>}
+        {'join': <class 'plugin.myjoin.JoinCommand'>, 'sum': <class 'plugin.sum.SumCommand'>}
         """
         command_classes = {}
 
-        for name in os.listdir(commands_directory):
+        for name in sorted(os.listdir(commands_directory)):
             path = os.path.join(commands_directory, name)
 
             link_bool = (not os.path.islink(path)) or follow_links  # Either not a link or links are allowed
