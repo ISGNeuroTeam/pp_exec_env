@@ -10,9 +10,13 @@ schema_file_name = _SCHEMA
 sys_read_interproc_name = sys_read_interproc
 sys_write_interproc_name = sys_write_interproc
 sys_write_result_name = sys_write_result
-local_storage_alias = LOCAL_POST_PROCESSING
-shared_storage_alias = SHARED_POST_PROCESSING
-interproc_storage_alias = INTERPROC_STORAGE
+local_storage_alias = local_post_processing
+shared_storage_alias = shared_post_processing
+interproc_storage_alias = interproc_storage
+
+[threadpoolctl]
+thread_limit = 2
+user_api = blas
 
 [plugins]
 follow_symlinks = yes

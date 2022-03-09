@@ -7,6 +7,7 @@ from typing import Dict, List, Type, Callable
 
 import execution_environment.command_executor as eece
 import pandas as pd
+from threadpoolctl import threadpool_limits
 
 from pp_exec_env import config
 from pp_exec_env.base_command import BaseCommand
@@ -168,22 +169,24 @@ class CommandExecutor(eece.CommandExecutor):
         df = None
         pipeline_len = len(commands)
 
-        for idx, command in enumerate(commands):
-            arguments = command['arguments']
-            command_name = command['name']
-            self.logger.info(f"Command {command_name} in progress...")
+        with threadpool_limits(limits=config.getint("threadpoolctl", "thread_limit"),
+                               user_api=config["threadpoolctl"]["user_api"]):
+            for idx, command in enumerate(commands):
+                arguments = command['arguments']
+                command_name = command['name']
+                self.logger.info(f"Command {command_name} in progress...")
 
-            command_cls = self.command_classes[command_name]
-            get_arg = eece.GetArg(self, arguments)
-            log_progress = self.get_command_progress_logger(command_name, idx, pipeline_len)
+                command_cls = self.command_classes[command_name]
+                get_arg = eece.GetArg(self, arguments)
+                log_progress = self.get_command_progress_logger(command_name, idx, pipeline_len)
 
-            command = command_cls(get_arg, log_progress)
-            command.logger = self.logger.getChild(f"command.{command_name}")  # Not a part of the interface
+                command = command_cls(get_arg, log_progress)
+                command.logger = self.logger.getChild(f"command.{command_name}")  # Not a part of the interface
 
-            df = command.transform(df)
+                df = command.transform(df)
 
-            if not isinstance(df, pd.DataFrame):
-                raise ValueError("You're doing something spooky, command must return a DataFrame")
+                if not isinstance(df, pd.DataFrame):
+                    raise ValueError("You're doing something spooky, command must return a DataFrame")
         return df
 
 

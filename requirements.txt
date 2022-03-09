@@ -2,3 +2,4 @@ pandas==1.4.0
 execution_environment @ git+ssh://git@github.com/ISGNeuroTeam/execution_environment.git
 numpy~=1.22.1
 pyarrow==7.0.0
+threadpoolctl==3.1.0
