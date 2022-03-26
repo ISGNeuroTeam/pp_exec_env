@@ -88,7 +88,9 @@ make_prepare_sh:
 pack: build make_prepare_sh
 	rm -f $(ENV_NAME)-*.tar.gz venv.tar.gz
 	echo Create archive \"$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz\"
-
-	$(CONDA) pack -n pp_exec_env -o venv.tar.gz
+	( \
+	. $(CONDA_FOLDER)/miniconda/bin/activate; \
+	conda pack -n pp_exec_env -o venv.tar.gz \
+	)
 	tar czf ./$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz $(ENV_NAME) docs venv.tar.gz prepare.sh
 	rm -f venv.tar.gz
