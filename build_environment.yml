@@ -1,0 +1,7 @@
+name: pp_exec_env
+channels:
+  - defaults
+dependencies:
+  - python=3.9.7
+  - pandas=1.4.1=py39h295c915_1
+  - numpy=1.21.2=py39h20f2e39_0

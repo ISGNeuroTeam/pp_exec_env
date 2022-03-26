@@ -146,3 +146,8 @@ atlassian-ide-plugin.xml
 
 # Real config
 config.ini
+
+# Build
+conda/
+prepare.sh
+venv.tar.gz

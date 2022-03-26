@@ -25,7 +25,8 @@ from pp_exec_env.sys_commands import (
 class TestCommands(unittest.TestCase):
     def setUp(self):
         self.tmp = os.path.join(os.path.curdir, "tmp")
-        self.resources = os.path.join(os.path.curdir, "resources")
+        tests_path = "" if os.getcwd().endswith("tests") else "tests"
+        self.resources = os.path.join(os.path.curdir, tests_path, "resources")
         self.ips = os.path.join(self.tmp, "ips")  # InterProcessing Storage
         self.lpp = os.path.join(self.tmp, "lpp")  # Local PostProcessing Storage
         self.spp = os.path.join(self.tmp, "spp")  # Shared PostProcessing Storage

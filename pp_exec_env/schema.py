@@ -111,7 +111,7 @@ def read_schema(schema_path: str) -> Tuple[Dict, Dict]:
 
     >>> from pp_exec_env.schema import read_schema
     >>> import os
-    >>> schema, schema_ddl = read_schema(os.path.join(os.pardir, "tests", "resources", "misc", "sample_schema"))
+    >>> schema, schema_ddl = read_schema(os.path.join(os.curdir, "tests", "resources", "misc", "sample_schema"))
     >>> schema
     {'_time': Int64Dtype(), 'some_field': 'float64', 'another_field': 'int32'}
     >>> schema_ddl
@@ -137,8 +137,8 @@ def read_jsonl_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
 
     >>> from pp_exec_env.schema import read_jsonl_with_schema
     >>> import os
-    >>> df = read_jsonl_with_schema(os.path.join(os.pardir, "tests", "resources", "data", "simple_jsonl", "_SCHEMA"),
-    ...                             os.path.join(os.pardir, "tests", "resources", "data", "simple_jsonl", "data"))
+    >>> df = read_jsonl_with_schema(os.path.join(os.curdir, "tests", "resources", "data", "simple_jsonl", "_SCHEMA"),
+    ...                             os.path.join(os.curdir, "tests", "resources", "data", "simple_jsonl", "data"))
     >>> df.head(1)
                 _time
     Index
@@ -165,8 +165,8 @@ def read_parquet_with_schema(schema_path: str, data_path: str) -> pd.DataFrame:
 
     >>> from pp_exec_env.schema import read_jsonl_with_schema
     >>> import os
-    >>> df = read_parquet_with_schema(os.path.join(os.pardir, "tests", "resources", "data", "simple_parquet", "_SCHEMA"),
-    ...                               os.path.join(os.pardir, "tests", "resources", "data", "simple_parquet", "data"))
+    >>> df = read_parquet_with_schema(os.path.join(os.curdir, "tests", "resources", "data", "simple_parquet", "_SCHEMA"),
+    ...                               os.path.join(os.curdir, "tests", "resources", "data", "simple_parquet", "data"))
     >>> df.head(1)
                 _time
     Index

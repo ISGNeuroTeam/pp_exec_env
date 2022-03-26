@@ -108,7 +108,7 @@ class CommandExecutor(eece.CommandExecutor):
 
         >>> from pp_exec_env.command_executor import CommandExecutor
         >>> import os
-        >>> CommandExecutor._import_user_commands(os.path.join(os.pardir, "tests", "resources", "commands"),
+        >>> CommandExecutor._import_user_commands(os.path.join(os.curdir, "tests", "resources", "commands"),
         ...                                                    follow_links=False)
         {'join': <class 'join.myjoin.JoinCommand'>, 'sum': <class 'sum.sum.SumCommand'>}
         """

@@ -21,7 +21,8 @@ def boilerplate_progress_log():
 class TestCommandExecutor(unittest.TestCase):
     def setUp(self):
         self.tmp = os.path.join(os.path.curdir, "tmp")
-        self.resources = os.path.join(os.path.curdir, "resources")
+        tests_path = "" if os.getcwd().endswith("tests") else "tests"
+        self.resources = os.path.join(os.path.curdir, tests_path, "resources")
         self.commands = os.path.join(self.resources, "commands")
         self.ips = os.path.join(self.tmp, "ips")  # InterProcessing Storage
         self.lpp = os.path.join(self.tmp, "lpp")  # Local PostProcessing Storage

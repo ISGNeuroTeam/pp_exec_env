@@ -1,10 +1,10 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open("requirements.txt", "r") as file:
     deps = file.readlines()
 
 setup(name='pp_exec_env',
-      version='0.1',
+      version='0.1.0',
       description='Postprocessing Execution Environment',
       author='Alexander Lakeev',
       author_email='alakeev@isgneuro.com',
