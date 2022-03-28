@@ -3,7 +3,7 @@ ifndef VERBOSE
 endif
 
 VERSION := $(shell cat setup.py | grep version | head -n 1 | sed -re "s/[^\"']+//" | sed -re "s/[\"',]//g")
-BRANCH := $(shell git symbolic-ref -q --short HEAD)
+BRANCH := $(shell git branch | grep -Po '(?<=^\*\s)(.*)$$')
 
 CONDA_FOLDER = ./conda
 CONDA = $(CONDA_FOLDER)/miniconda/bin/conda
