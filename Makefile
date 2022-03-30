@@ -79,11 +79,13 @@ publish: build
 make_prepare_sh:
 	echo Create prepare.sh
 	echo "\
-	mkdir -p venv\n\
-	tar -xzf venv.tar.gz -C venv\n\
-	. venv/bin/activate\n\
-	conda-unpack\
+	mkdir -p venv; \
+	tar -xzf venv.tar.gz -C venv; \
+	. venv/bin/activate; \
+	conda-unpack; \
+	rm -f venv.tar.gz; \
 	" > prepare.sh
+	chmod +x prepare.sh
 
 pack: build make_prepare_sh
 	rm -f $(ENV_NAME)-*.tar.gz venv.tar.gz
