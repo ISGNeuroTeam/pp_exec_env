@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as file:
     deps = file.readlines()
 
 setup(name='pp_exec_env',
-      version='1.0.2',
+      version='1.0.3',
       description='Postprocessing Execution Environment',
       author='Alexander Lakeev',
       author_email='alakeev@isgneuro.com',
