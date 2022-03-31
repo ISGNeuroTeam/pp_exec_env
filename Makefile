@@ -78,14 +78,7 @@ publish: build
 
 make_prepare_sh:
 	echo Create prepare.sh
-	echo "\
-  	cd pp_exec_env; \
-	mkdir -p venv; \
-	tar -xzf ../venv.tar.gz -C venv; \
-	. venv/bin/activate; \
-	conda-unpack; \
-	rm -f ../venv.tar.gz; \
-	" > prepare.sh
+	cp docs/prepare.sh ./
 	chmod +x prepare.sh
 
 pack: build make_prepare_sh
@@ -95,5 +88,5 @@ pack: build make_prepare_sh
 	. $(CONDA_FOLDER)/miniconda/bin/activate; \
 	conda pack -n pp_exec_env -o venv.tar.gz \
 	)
-	tar czf ./$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz $(ENV_NAME) docs venv.tar.gz prepare.sh
+	tar czf ./$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz $(ENV_NAME) --exclude-from=docs/prepare.sh docs venv.tar.gz prepare.sh
 	rm -f venv.tar.gz

@@ -149,5 +149,5 @@ config.ini
 
 # Build
 conda/
-prepare.sh
+/prepare.sh
 venv.tar.gz
