@@ -1,11 +1,13 @@
-from pp_exec_env.base_command import BaseCommand, Syntax, Rule
 import pandas as pd
+
+from otlang.sdk.syntax import Positional, Keyword, OTLType
+from pp_exec_env.base_command import BaseCommand, Syntax
 
 
 class SumCommand(BaseCommand):
-    syntax = Syntax([Rule(name="col", type="arg", input_types=['string', 'term'], required=True),
-                     Rule(name="cols", type="arg", input_types=['string', 'term'], inf=True),
-                     Rule(name="field_name", type="kwarg", input_types=["string", "term"], inf=True),],
+    syntax = Syntax([Positional(name="col", otl_type=OTLType.TEXT, required=True),
+                     Positional(name="cols", otl_type=OTLType.TEXT, inf=True),
+                     Keyword(name="field_name", otl_type=OTLType.TEXT, inf=True)],
                     use_timewindow=False)
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:

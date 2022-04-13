@@ -1,9 +1,10 @@
 import os
 
 import pandas as pd
+from otlang.sdk.syntax import Keyword
 
 from pp_exec_env import config
-from pp_exec_env.base_command import BaseCommand, Syntax, Rule
+from pp_exec_env.base_command import BaseCommand, Syntax
 from pp_exec_env.schema import (
     read_parquet_with_schema,
     read_jsonl_with_schema,
@@ -23,8 +24,8 @@ class SysReadInterProcCommand(BaseCommand):
     An implementation of `ReadIPS` system command,
     which reads parquet and jsonl result files with schema from the InterProcessing Storage.
     """
-    syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
-                     Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
+    syntax = Syntax([Keyword("path", required=True),
+                     Keyword(name='storage_type', required=True)], use_timewindow=False)
 
     ips_path = ""
 
@@ -52,8 +53,8 @@ class SysWriteResultCommand(BaseCommand):
 
     Available storage options: Local Postprocessing and Shared Postprocessing
     """
-    syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
-                     Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
+    syntax = Syntax([Keyword(name='path', required=True),
+                     Keyword(name='storage_type', required=True)], use_timewindow=False)
 
     ips_path = ""
     local_storage_path = ""
@@ -85,8 +86,8 @@ class SysWriteInterProcCommand(BaseCommand):
     An implementation of `WriteIPS` system command,
     which writes parquet result files with schema in the InterProcessing Storage.
     """
-    syntax = Syntax([Rule(name='path', type='kwarg', key='path', required=True),
-                     Rule(name='storage_type', type='kwarg', key='storage_type', required=True)], use_timewindow=False)
+    syntax = Syntax([Keyword(name='path', key='path', required=True),
+                     Keyword(name='storage_type',  required=True)], use_timewindow=False)
 
     ips_path = ""
 
