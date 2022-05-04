@@ -140,12 +140,12 @@ class CommandExecutor(eece.CommandExecutor):
                 try:
                     files = cls.config.read(config_path)
                 except configparser.ParsingError as e:
-                    CommandExecutor.logger.warning(f"Ignoring config file of {cls_name} plugin ({config_path}).")
+                    CommandExecutor.logger.warning(f"Ignoring config file of {cls_name} plugin ({config_path})")
                     CommandExecutor.logger.warning(e.message)
-                    files = "err"
+                    files = None
                 finally:
-                    if isinstance(files, list) and len(files) == 0:  # Config file was not found
-                        CommandExecutor.logger.warning(f"No config file found for plugin {cls_name}")
+                    if files:
+                        CommandExecutor.logger.warning(f"Loaded config file for {cls_name}")
 
                 command_classes[name] = cls
                 CommandExecutor.logger.info(f"Added command {cls_name} with name `{name}`")
