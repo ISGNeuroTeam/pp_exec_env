@@ -11,6 +11,8 @@ ENV_NAME = pp_exec_env
 ENV = $(CONDA_FOLDER)/miniconda/envs/$(ENV_NAME)
 ENV_PYTHON = $(ENV)/bin/python3.9
 
+export PYTHONNOUSERSITE=1
+
 download_conda:
 	echo Download Miniconda
 	mkdir -p $(CONDA_FOLDER)
@@ -30,7 +32,7 @@ install_conda_pack:
 create_env: install_conda install_conda_pack
 	echo Create environment
 	$(CONDA) env update -f build_environment.yml --prune
-	$(ENV_PYTHON) -m pip install -r requirements.txt \
+	$(ENV_PYTHON) -m pip install --no-cache-dir -r requirements.txt \
 	--extra-index-url http://s.dev.isgneuro.com/repository/ot.platform/simple \
 	--trusted-host s.dev.isgneuro.com
 

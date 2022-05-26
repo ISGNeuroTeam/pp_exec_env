@@ -1,2 +1,2 @@
-execution_environment~=1.0.0
+execution_environment~=1.2.0
 otlang
