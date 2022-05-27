@@ -6,7 +6,7 @@ from setuptools import setup
 
 
 setup(name='pp_exec_env',
-      version='1.0.6',
+      version='1.1.0',
       description='Postprocessing Execution Environment',
       author='Alexander Lakeev',
       author_email='alakeev@isgneuro.com',
