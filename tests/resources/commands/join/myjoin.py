@@ -8,8 +8,7 @@ class JoinCommand(BaseCommand):
     syntax = Syntax([Positional(name='field', required=True, otl_type=OTLType.TEXT),
                      Positional(name='fields', inf=True, otl_type=OTLType.TEXT),
                      Keyword(name='type', required=False, otl_type=OTLType.TEXT),
-                     Subsearch(name='jdf', required=True)],
-                    use_timewindow=False)
+                     Subsearch(name='jdf', required=True)])
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         fields = [self.get_arg('field').value] + [v.value for v in self.get_iter('fields')]

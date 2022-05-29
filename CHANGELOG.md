@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2022-05-27
+### Changed
+- Replaced default value passed to `transform` (`None`) with an empty `pd.DataFrame`
+- Replaced `Syntax` with a new implementation from `execution_environment:1.2.0`
+- Dropped requirements.txt in favor of build_environment.yml
+
 ## [1.0.6] - 2022-05-04
 ### Changed
 - Logging of command configuration stage

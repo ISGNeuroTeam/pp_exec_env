@@ -25,7 +25,7 @@ class SysReadInterProcCommand(BaseCommand):
     which reads parquet and jsonl result files with schema from the InterProcessing Storage.
     """
     syntax = Syntax([Keyword("path", required=True),
-                     Keyword(name='storage_type', required=True)], use_timewindow=False)
+                     Keyword(name='storage_type', required=True)])
 
     ips_path = ""
 
@@ -54,7 +54,7 @@ class SysWriteResultCommand(BaseCommand):
     Available storage options: Local Postprocessing and Shared Postprocessing
     """
     syntax = Syntax([Keyword(name='path', required=True),
-                     Keyword(name='storage_type', required=True)], use_timewindow=False)
+                     Keyword(name='storage_type', required=True)])
 
     ips_path = ""
     local_storage_path = ""
@@ -87,7 +87,7 @@ class SysWriteInterProcCommand(BaseCommand):
     which writes parquet result files with schema in the InterProcessing Storage.
     """
     syntax = Syntax([Keyword(name='path', key='path', required=True),
-                     Keyword(name='storage_type',  required=True)], use_timewindow=False)
+                     Keyword(name='storage_type',  required=True)])
 
     ips_path = ""
 

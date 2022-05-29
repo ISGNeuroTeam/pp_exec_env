@@ -11,6 +11,8 @@ ENV_NAME = pp_exec_env
 ENV = $(CONDA_FOLDER)/miniconda/envs/$(ENV_NAME)
 ENV_PYTHON = $(ENV)/bin/python3.9
 
+export PYTHONNOUSERSITE=1
+
 download_conda:
 	echo Download Miniconda
 	mkdir -p $(CONDA_FOLDER)
@@ -25,14 +27,11 @@ install_conda: download_conda
   	fi;
 
 install_conda_pack:
-	$(CONDA) install conda-pack -c defaults -y
+	$(CONDA) install conda-pack -c conda-forge  -y
 
 create_env: install_conda install_conda_pack
 	echo Create environment
 	$(CONDA) env update -f build_environment.yml --prune
-	$(ENV_PYTHON) -m pip install -r requirements.txt \
-	--extra-index-url http://s.dev.isgneuro.com/repository/ot.platform/simple \
-	--trusted-host s.dev.isgneuro.com
 
 build: create_env
 	echo Build
@@ -86,7 +85,7 @@ pack: build make_prepare_sh
 	echo Create archive \"$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz\"
 	( \
 	. $(CONDA_FOLDER)/miniconda/bin/activate; \
-	conda pack -n pp_exec_env -o venv.tar.gz \
+	conda pack -p $(ENV) -o venv.tar.gz \
 	)
 	tar czf ./$(ENV_NAME)-$(VERSION)-$(BRANCH).tar.gz $(ENV_NAME) --exclude-from=docs/prepare.sh docs venv.tar.gz prepare.sh
 	rm -f venv.tar.gz

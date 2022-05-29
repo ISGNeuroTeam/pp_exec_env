@@ -166,7 +166,7 @@ class CommandExecutor(eece.CommandExecutor):
         For example usage consider looking at tests.
         """
         self.logger.info("Execution started")
-        df = None
+        df = pd.DataFrame()
         pipeline_len = len(commands)
 
         with threadpool_limits(limits=config.getint("threadpoolctl", "thread_limit"),
