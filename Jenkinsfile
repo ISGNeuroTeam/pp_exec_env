@@ -57,10 +57,10 @@ pipeline {
                 }
             }
         }
-        stage('Clean Dist') {
+        stage('Clean Distribution Files') {
             steps {
                 sh '''
-          make clean dist'''
+          make clean'''
             }
         }
         stage('Pack') {
