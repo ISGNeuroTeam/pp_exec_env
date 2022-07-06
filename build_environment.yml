@@ -82,5 +82,5 @@ dependencies:
     - --extra-index-url http://s.dev.isgneuro.com/repository/ot.platform/simple
     - --trusted-host s.dev.isgneuro.com
     - execution-environment~=1.2.0
-    - otlang==1.1.1
+    - otlang==1.2.0
     - tatsu==5.6.1
