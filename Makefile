@@ -52,7 +52,7 @@ clean_dist:
 	rm -fr build
 	rm -fr dist
 	rm -f $(ENV_NAME)-*.tar.gz venv.tar.gz
-	rm -f prepare.sh
+	rm -f prepare.sh requirements.txt
 
 clean_conda:
 	echo Clean Conda
@@ -66,14 +66,14 @@ remove_conda:
 		rm -fr $(CONDA_FOLDER); \
   	fi;
 
-clean: clean_conda remove_conda clean_dist
+clean: clean_dist
+
+clean_all: clean clean_conda remove_conda
 
 publish: build
-	( \
-	. $(CONDA_FOLDER)/miniconda/bin/activate; \
-	conda activate $(ENV_NAME); \
-	python ./setup.py sdist; \
-	)
+	echo $(ENV_PYTHON)
+	PYTHONNOUSERSITE=0 $(ENV_PYTHON) -m pip list --format=freeze | sed -r "/(conda-pack|pip|setuptools|wheel|pp-exec-env).*/d" > requirements.txt;
+	$(ENV_PYTHON) ./setup.py sdist
 
 make_prepare_sh:
 	echo Create prepare.sh

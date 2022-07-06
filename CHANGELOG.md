@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-07-06
+### Fixed
+- Small typo in CHANGELOG.md
+### Changed
+- Changed `make clean` behaviour to clean only distribution files
+- Completely redesigned Jenkins pipelines
+### Added
+- Support for PyPi publishing
+
 ## [1.1.0] - 2022-05-27
 ### Changed
 - Replaced default value passed to `transform` (`None`) with an empty `pd.DataFrame`
@@ -17,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logging of command configuration stage
 
 ## [1.0.5] - 2022-04-13
-## Added
+### Added
 - `otlang` as a requirement
 ### Changed
 - Bumped OTLang version
