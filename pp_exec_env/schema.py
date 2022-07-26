@@ -1,4 +1,5 @@
 import re
+import datetime
 from typing import Dict, Tuple
 
 import numpy as np
@@ -15,6 +16,8 @@ DDL_TO_PANDAS = {
     "LONG": "int64",
     "BIGINT": pd.Int64Dtype(),
     "NULL": "int64",
+    "TIMESTAMP": "datetime64[ns]",
+    "BOOLEAN": pd.BooleanDtype()
 }
 
 PANDAS_TO_DDL = {
@@ -42,6 +45,14 @@ PANDAS_TO_DDL = {
     np.float32: "FLOAT",
     pd.Float32Dtype: "FLOAT",
 
+    "bool": "BOOLEAN",
+    np.bool_: "BOOLEAN",
+    pd.BooleanDtype(): "BOOLEAN",
+
+    "datetime64": "TIMESTAMP",
+    np.datetime64: "TIMESTAMP",
+    datetime.datetime: "TIMESTAMP",
+
     pd.StringDtype(): "STRING"
 }
 
@@ -49,6 +60,7 @@ PYTHON_TO_DDL = {
     str: "STRING",
     int: "LONG",
     float: "DOUBLE",
+    bool: "BOOLEAN"
 }
 
 OBJ_TYPE = np.dtype(np.object_)
