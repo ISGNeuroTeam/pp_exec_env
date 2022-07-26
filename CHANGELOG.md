@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2022-07-26
+### Added
+- Support for Boolean type
+- Support for Timestamp type
+
+## [1.2.1] - 2022-07-06
+### Changed
+- OTLang version bump
+
 ## [1.2.0] - 2022-07-06
 ### Fixed
 - Small typo in CHANGELOG.md
