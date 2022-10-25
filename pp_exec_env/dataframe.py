@@ -142,7 +142,7 @@ class SchemaAccessor:
             # Now look for downcast on numpy types and try to remove as much of it, as possible
             if isinstance(dtype, np.dtype):
                 initial_ddl = self._initial_schema.get(field, None)
-                if initial_ddl is not None and DDL_TO_PANDAS[initial_ddl] == dtype.name:
+                if initial_ddl is not None and DDL_TO_PANDAS.get(initial_ddl, None) == dtype.name:
                     schema[field] = initial_ddl
         return schema
 
