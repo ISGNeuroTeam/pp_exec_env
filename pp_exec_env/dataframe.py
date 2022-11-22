@@ -164,6 +164,8 @@ class SchemaAccessor:
         """
         ddl = []
         for field, ddl_type in self.schema.items():
+            if not isinstance(field, str):
+                field = str(field)
             field = field.replace('`', '``')  # escape backtick
             ddl.append(f"`{field}` {ddl_type}")
         return ','.join(ddl)

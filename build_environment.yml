@@ -5,6 +5,7 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
+  - _py-xgboost-mutex=2.0=cpu_0
   - abseil-cpp=20210324.2=h9c3ff4c_0
   - arrow-cpp=7.0.0=py39h74dfcfe_7_cpu
   - aws-c-cal=0.5.11=h95a6274_0
@@ -13,14 +14,17 @@ dependencies:
   - aws-c-io=0.10.5=hfb6a706_0
   - aws-checksums=0.1.11=ha31a3da_7
   - aws-sdk-cpp=1.8.186=hb4091e7_3
+  - blas=1.0=openblas
   - bottle=0.12.18=py_0
   - bzip2=1.0.8=h7f98852_4
   - c-ares=1.18.1=h7f98852_0
-  - ca-certificates=2022.5.18.1=ha878542_0
+  - ca-certificates=2022.10.11=h06a4308_0
+  - fftw=3.3.9=h27cfd23_1
   - gflags=2.2.2=he1b5a44_1004
   - glog=0.6.0=h6f12383_0
   - grpc-cpp=1.45.2=hd8f4eba_3
   - gunicorn=20.1.0=py39hf3d152e_2
+  - joblib=1.1.1=py39h06a4308_0
   - keyutils=1.6.1=h166bdaf_0
   - krb5=1.19.3=h3790be6_0
   - ld_impl_linux-64=2.36.1=hea4e1c9_2
@@ -48,17 +52,19 @@ dependencies:
   - libstdcxx-ng=12.1.0=ha89aaad_16
   - libthrift=0.16.0=h519c5ea_1
   - libutf8proc=2.7.0=h7f98852_0
+  - libxgboost=1.5.0=h6a678d5_2
   - libzlib=1.2.11=h166bdaf_1014
   - lz4-c=1.9.3=h9c3ff4c_1
   - ncurses=6.3=h27087fc_1
   - nomkl=1.0=h5ca1d4c_0
   - numexpr=2.8.0=py39h194a79d_102
   - numpy=1.22.4=py39hc58783e_0
-  - openssl=1.1.1o=h166bdaf_0
+  - openssl=1.1.1s=h7f8727e_0
   - orc=1.7.3=h6c59b99_1
   - pandas=1.4.2=py39h1832856_2
   - parquet-cpp=1.5.1=2
   - pip=22.1.1=pyhd8ed1ab_0
+  - py-xgboost=1.5.0=py39h06a4308_2
   - pyarrow=7.0.0=py39h42d110c_7_cpu
   - python=3.9.7=hb7a2778_3_cpython
   - python-dateutil=2.8.2=pyhd8ed1ab_0
@@ -67,6 +73,8 @@ dependencies:
   - re2=2022.04.01=h27087fc_0
   - readline=8.1=h46c0cb4_0
   - s2n=1.0.10=h9b69904_0
+  - scikit-learn=1.1.3=py39h6a678d5_0
+  - scipy=1.7.3=py39hf838250_2
   - setuptools=62.3.2=py39hf3d152e_0
   - six=1.16.0=pyh6c4a22f_0
   - snappy=1.1.9=hbd366e4_1
@@ -75,12 +83,32 @@ dependencies:
   - tk=8.6.12=h27826a3_0
   - tzdata=2022a=h191b570_0
   - wheel=0.37.1=pyhd8ed1ab_0
+  - xgboost=1.5.0=py39h06a4308_2
   - xz=5.2.5=h516909a_1
   - zlib=1.2.11=h166bdaf_1014
-  - zstd==1.5.2=h8a70e8d_1
+  - zstd=1.5.2=h8a70e8d_1
   - pip:
     - --extra-index-url http://s.dev.isgneuro.com/repository/ot.platform/simple
     - --trusted-host s.dev.isgneuro.com
-    - execution-environment~=1.2.0
+    - cmdstanpy==1.0.8
+    - contourpy==1.0.6
+    - convertdate==2.4.0
+    - cycler==0.11.0
+    - ephem==4.1.3
+    - execution-environment==1.2.1
+    - fonttools==4.38.0
+    - hijri-converter==2.2.4
+    - holidays==0.17
+    - kiwisolver==1.4.4
+    - korean-lunar-calendar==0.3.1
+    - lunarcalendar==0.0.9
+    - matplotlib==3.6.2
     - otlang==1.2.0
+    - packaging==21.3
+    - pillow==9.3.0
+    - prophet==1.1.1
+    - pymeeus==0.5.11
+    - pyparsing==3.0.9
+    - setuptools-git==1.2
     - tatsu==5.6.1
+    - tqdm==4.64.1
