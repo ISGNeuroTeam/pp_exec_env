@@ -3,10 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.1] - 2022-11-30
+### Added
+- Added platform_envs dictionary to command
+
 ## [1.4.0] - 2022-11-22
-## Fixed 
+### Fixed 
 - Fix field name in ddl might be an integer
-## Added
+### Added
 - scikit-learn library to environment
 - xgboost library to environment
 
