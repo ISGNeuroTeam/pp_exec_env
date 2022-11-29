@@ -95,7 +95,7 @@ dependencies:
     - convertdate==2.4.0
     - cycler==0.11.0
     - ephem==4.1.3
-    - execution-environment==1.2.2
+    - execution-environment>=1.2.2
     - fonttools==4.38.0
     - hijri-converter==2.2.4
     - holidays==0.17
