@@ -154,7 +154,7 @@ class CommandExecutor(eece.CommandExecutor):
 
         return command_classes
 
-    def execute(self, commands: List[Dict]) -> pd.DataFrame:
+    def execute(self, commands: List[Dict], platform_envs: Dict = None) -> pd.DataFrame:
         """
         Execute a list of serialized OTL commands.
 
@@ -180,7 +180,7 @@ class CommandExecutor(eece.CommandExecutor):
                 get_arg = eece.GetArg(self, arguments)
                 log_progress = self.get_command_progress_logger(command_name, idx, pipeline_len)
 
-                command = command_cls(get_arg, log_progress)
+                command = command_cls(get_arg, log_progress, platform_envs)
                 command.logger = self.logger.getChild(f"command.{command_name}")  # Not a part of the interface
 
                 df = command.transform(df)
