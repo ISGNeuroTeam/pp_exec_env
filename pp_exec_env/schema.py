@@ -10,7 +10,7 @@ import pandas as pd
 DDL_TO_PANDAS = {
     "STRING": pd.StringDtype(),
     "FLOAT": "float32",
-    "DOUBLE":  "float64",
+    "DOUBLE": "float64",
     "INTEGER": "int32",
     "INT": "int32",
     "LONG": "int64",
@@ -70,6 +70,7 @@ OBJ_TYPE = np.dtype(np.object_)
 # Group 3: Type if Group 2 was an ARRAY
 # Group 4: NOT NULL
 SPARK_FIELD_DDL_REGEX = re.compile("^`(.*)?` ([A-Z]+)(<[A-Z]+>)?( NOT NULL)?$")
+DECIMAL_REGEX = re.compile(r"DECIMAL\(\d+\,\d+\)")
 
 
 def ddl_to_pd_schema(ddl: str) -> Tuple[Dict, Dict]:
@@ -94,7 +95,13 @@ def ddl_to_pd_schema(ddl: str) -> Tuple[Dict, Dict]:
     >>> d
     {'_time': 'BIGINT', 'some_field': 'DOUBLE', 'another_field': 'ARRAY<INT>'}
     """
-    fields = ddl.split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
+    # Добавлен Костыль для исправления ошибки с полями типа DECIMAL(3,2) Заменяем DECIMAL на DOUBLE
+    # В будущем весь этот файл нужно переписывать и делать преобразование типов спарка в pandas с использованием pyspark
+    # https://github.com/apache/spark/blob/master/python/pyspark/pandas/typedef/typehints.py
+    fields = DECIMAL_REGEX.sub(
+        'DOUBLE', ddl
+    ).split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
+
     schema = {}
     ddl_schema = {}
 
