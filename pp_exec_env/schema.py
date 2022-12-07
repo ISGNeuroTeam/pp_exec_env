@@ -95,11 +95,11 @@ def ddl_to_pd_schema(ddl: str) -> Tuple[Dict, Dict]:
     >>> d
     {'_time': 'BIGINT', 'some_field': 'DOUBLE', 'another_field': 'ARRAY<INT>'}
     """
-    # Добавлен Костыль для исправления ошибки с полями типа DECIMAL(3,2) Заменяем DECIMAL на FLOAT
+    # Добавлен Костыль для исправления ошибки с полями типа DECIMAL(3,2) Заменяем DECIMAL на DOUBLE
     # В будущем весь этот файл нужно переписывать и делать преобразование типов спарка в pandas с использованием pyspark
     # https://github.com/apache/spark/blob/master/python/pyspark/pandas/typedef/typehints.py
     fields = DECIMAL_REGEX.sub(
-        'FLOAT', ddl
+        'DOUBLE', ddl
     ).split(',')  # Yep, would fail on Structures and Maps, which we do not support anyway
 
     schema = {}
