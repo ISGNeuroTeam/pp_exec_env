@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added platform_envs dictionary to command
 
+## [1.4.3] - 2022-12-14
+### Changed
+- scipy version >= 1.9.3
+
 ## [1.4.2] - 2022-12-07
 ### Fixed 
 - Fix error with spark DECIMAL
