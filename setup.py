@@ -8,7 +8,7 @@ except OSError:
     requirements = []
 
 setup(name='pp_exec_env',
-      version='1.4.2',
+      version='1.4.3',
       description='Postprocessing Execution Environment',
       author='Alexander Lakeev',
       author_email='alakeev@isgneuro.com',
