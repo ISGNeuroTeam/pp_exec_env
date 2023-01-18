@@ -114,7 +114,8 @@ class SchemaAccessor:
                 return f"ARRAY<{sub_value_ddl_type}>"
             else:
                 # Some unknown Object
-                raise TypeError(f"Could not determine type of the column \"{field}\"")
+                # raise TypeError(f"Could not determine type of the column \"{field}\"")
+                return 'STRING'
 
     @property
     def schema(self) -> Dict[str, str]:
