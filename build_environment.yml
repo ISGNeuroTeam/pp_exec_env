@@ -59,10 +59,12 @@ dependencies:
   - nomkl=1.0=h5ca1d4c_0
   - numexpr=2.8.0=py39h194a79d_102
   - numpy=1.22.4=py39hc58783e_0
+  - openblas=0.3.20=pthreads_h320a7e8_0
   - openssl=1.1.1s=h7f8727e_0
   - orc=1.7.3=h6c59b99_1
   - pandas=1.4.2=py39h1832856_2
   - parquet-cpp=1.5.1=2
+  - patsy=0.5.2=py39h06a4308_1
   - pip=22.1.1=pyhd8ed1ab_0
   - py-xgboost=1.5.0=py39h06a4308_2
   - pyarrow=7.0.0=py39h42d110c_7_cpu
@@ -79,6 +81,7 @@ dependencies:
   - six=1.16.0=pyh6c4a22f_0
   - snappy=1.1.9=hbd366e4_1
   - sqlite=3.38.5=h4ff8645_0
+  - statsmodels=0.13.2=py39h7f8727e_0
   - threadpoolctl=3.1.0=pyh8a188c0_0
   - tk=8.6.12=h27826a3_0
   - tzdata=2022a=h191b570_0
