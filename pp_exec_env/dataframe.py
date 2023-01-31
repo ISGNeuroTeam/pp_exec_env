@@ -110,7 +110,8 @@ class SchemaAccessor:
                 sub_value_type = type(sub_value)
                 sub_value_ddl_type = PYTHON_TO_DDL.get(sub_value_type, None) or PANDAS_TO_DDL.get(sub_value_type, None)
                 if not sub_value_ddl_type:
-                    raise TypeError(f"Unsupported type \"{sub_value_type}\" in an Array at column \"{field}\"")
+                    return f"ARRAY<STRING>"
+                    # raise TypeError(f"Unsupported type \"{sub_value_type}\" in an Array at column \"{field}\"")
                 return f"ARRAY<{sub_value_ddl_type}>"
             else:
                 # Some unknown Object
