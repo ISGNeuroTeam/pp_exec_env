@@ -22,7 +22,7 @@ user_api = blas
 follow_symlinks = yes
 
 [logging]
-base_logger = PostProcessing
+base_logger = exec_env
 """
 
 
