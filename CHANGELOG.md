@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.8] - 2023-03-22
 ### Added
 - Add fastparquet to virtual environment
+### Changed 
+- execution_environment version up to 1.2.3
 
 ## [1.4.7] - 2023-03-07
 ### Changed
